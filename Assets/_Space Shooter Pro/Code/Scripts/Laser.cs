@@ -8,7 +8,7 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float _speed = 8f;
     [SerializeField]
-    private float _screenUpperBound = 8f;
+    private float _screenUpperBound = 8.0f;
     private bool _isEnemyLaser = false;
     #endregion
     #region Builtin Methods
@@ -32,8 +32,6 @@ public class Laser : MonoBehaviour
         //destroy go after certain bound is met
         if (transform.position.y > _screenUpperBound)
         {
-            //check if this object has a parent
-            //destroy parent too
             if (transform.parent != null)
             {
                 Destroy(transform.parent.gameObject);
@@ -49,8 +47,6 @@ public class Laser : MonoBehaviour
         //destroy go after certain bound is met
         if (transform.position.y < -_screenUpperBound)
         {
-            //check if this object has a parent
-            //destroy parent too
             if (transform.parent != null)
             {
                 Destroy(transform.parent.gameObject);
