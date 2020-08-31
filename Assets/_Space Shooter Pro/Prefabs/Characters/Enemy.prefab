@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 3392356330623903319}
   - component: {fileID: 2547141472581654292}
   - component: {fileID: 2083490620072673247}
-  - component: {fileID: 5703485893434601709}
   - component: {fileID: 6508482249511384720}
+  - component: {fileID: 4159101339031335939}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 5409840854268951417}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.93, y: 1.41, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -120,7 +120,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00000059604645, y: 0.044795513}
+  m_Offset: {x: 0.011141241, y: 0.016125202}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -131,7 +131,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.3247607, y: 2.9160624}
+  m_Size: {x: 2.2133422, y: 2.8040466}
   m_EdgeRadius: 0
 --- !u!95 &2083490620072673247
 Animator:
@@ -152,22 +152,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5703485893434601709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5409840854268951417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb51fd2c33b34a64691cb3eb760818a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _speed: 4
-  _laserPrefab: {fileID: 3996415025016080808, guid: c81dfea0f8b9151448a66060c86da0ee,
-    type: 3}
-  _deathSpeed: 2
 --- !u!82 &6508482249511384720
 AudioSource:
   m_ObjectHideFlags: 0
@@ -264,3 +248,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4159101339031335939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409840854268951417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb51fd2c33b34a64691cb3eb760818a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 4
+  _laserPrefab: {fileID: 3361327815437041854, guid: 440ab416c8d1e2e4da84cb7c5d8f2063,
+    type: 3}
+  _deathSpeed: 2

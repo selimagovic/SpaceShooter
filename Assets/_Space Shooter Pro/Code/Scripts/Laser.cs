@@ -9,23 +9,24 @@ public class Laser : MonoBehaviour
     private float _speed = 8f;
     [SerializeField]
     private float _screenUpperBound = 8.0f;
+
     private bool _isEnemyLaser = false;
     #endregion
     #region Builtin Methods
 
     private void Update()
     {
-        //if it is player laser then move laser up
-        if (_isEnemyLaser == false)
-        {
-            MoveUP();
-        }
-        else
+        //if it is Enemy laser then move laser down
+        if (_isEnemyLaser)
         {
             MoveDown();
         }
+        else
+        {
+            MoveUp();           
+        }
     }
-    void MoveUP()
+    void MoveUp()
     {
         transform.Translate(Vector3.up * _speed * Time.deltaTime);
 
