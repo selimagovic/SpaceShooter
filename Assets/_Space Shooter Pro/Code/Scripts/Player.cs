@@ -6,18 +6,28 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// Created By Selim Agovic
+/// Player controll script uses Unity New Input system, 
+/// every code is designed to work with new input system.
+/// </summary>
 public class Player : MonoBehaviour
 {
     #region Variables
-    public Text speedText=null;
+    //public Text speedText=null;
     public Text powerUpText = null;
     [Header("Player Properties")]
     [SerializeField]
     private GameObject[] _engines = null;
     [SerializeField]
-    [Range(2, 15)]
+    private GameObject _thruster = null;
+    [SerializeField]
+    [Range(2, 18)]
     private float _speed = 5f;
-
+    [SerializeField]
+    [Range(1.0f,6.0f)]
+    private float _boostMultiplier = 1.5f;
     [SerializeField]
     [Range(1f, 5f)]
     private float _speedMultiplier = 2f;
@@ -36,21 +46,24 @@ public class Player : MonoBehaviour
     [Header("Audio Properties")]
     [SerializeField]
     private AudioClip _laserSound=null;
+    [Space]
+    [Header("Laser Properties")]
     [SerializeField]
     private GameObject _laserPrefab=null;
     [SerializeField]
     private float _laserOffset = 1.05f;
+    [Space]
+    [Header("Powerup Properties")]
     [SerializeField]
     private GameObject _tripleShootPrefab=null;
     [SerializeField]
     private GameObject _shieldGO = null;
-    //private List<PowerUP> _powerUps = new List<PowerUP>();
-    [SerializeField]
-    private int _score=0;
 
+    private int _score = 0;
     private PlayerControls _playerControls;
     InputAction _onMovementAction;
     InputAction _onShootingAction;
+    InputAction _onBoostAction;
 
     bool isTrippleShotActive=false;
     private float _initialSpeed;
@@ -58,6 +71,7 @@ public class Player : MonoBehaviour
     public GameObject ShieldGO { get => _shieldGO;}
 
     private AudioSource _audioSource;
+    private SpriteRenderer _thrusterSpriteRenderer;
     #endregion
     #region Builtin Methods
     private void Awake()
@@ -65,15 +79,24 @@ public class Player : MonoBehaviour
         _playerControls = new PlayerControls();
         _onShootingAction = _playerControls.Player.Shooting;
         _onShootingAction.performed += ctx => Shoot();
+        
     }
 
     private void Start()
     {
+        
         transform.position = new Vector3(0, 0, 0);
         _initialSpeed = _speed;
-        speedText.text = "Speed: " + _initialSpeed.ToString();
+        //speedText.text = "Speed: " + _initialSpeed.ToString();
         powerUpText.gameObject.SetActive(false);
         ShieldGO.gameObject.SetActive(false);
+
+        //change Thruister Collor when boost is applied
+        _thrusterSpriteRenderer = _thruster.GetComponent<SpriteRenderer>();
+        if (_thrusterSpriteRenderer==null)
+        {
+            Debug.LogError("Please Add missing Game Objects {Thruster} at " + transform.name);
+        }
         _score = 0;
         if(_engines==null)
         {
@@ -100,15 +123,17 @@ public class Player : MonoBehaviour
         _playerControls.Enable();
         _onMovementAction = _playerControls.Player.Movement;
         _onShootingAction = _playerControls.Player.Shooting;
-
+        _onBoostAction = _playerControls.Player.Boosting;
         _onShootingAction.Enable();
         _onMovementAction.Enable();
+        _onBoostAction.Enable();
     }
 
     private void OnDisable()
     {
         _onMovementAction.Disable();
         _onShootingAction.Disable();
+        _onBoostAction.Disable();
     }
     #endregion
     #region --Public Custom Methods--
@@ -161,7 +186,23 @@ public class Player : MonoBehaviour
         Vector2 movement = _onMovementAction.ReadValue<Vector2>();
 
         Vector3 direction = new Vector3(movement.x, movement.y);
-        transform.Translate(direction * _speed * Time.deltaTime);
+        
+        //If we press left shift(keyboard) or right trigger (gamepad) boost is activated, othervise normal speed is activated
+        //as a on screen visualisation thruster collor is changed and set to normal when deactivated.
+        if (_onBoostAction.activeControl!=null)
+        {
+            Boost(direction);
+            //Debug.Log("Boost speed is: "+ _speed);
+        }
+        else
+        {
+            _speed = _initialSpeed;
+            transform.Translate(direction * _speed * Time.deltaTime);
+            _thrusterSpriteRenderer.color = new Color(255, 255, 255, 255);
+            //speedText.text = "Speed: " + _speed.ToString();
+            //Debug.Log("Normal speed is: " + _speed);
+        }
+        
 
         //Clamp Vertical screen position
         transform.position = new Vector3(transform.position.x,
@@ -176,7 +217,12 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(_screenBoundLeftRight.x, transform.position.y, 0);
         }
     }
-
+    void Boost(Vector3 direction)
+    {
+        transform.Translate(direction * (_speed * _boostMultiplier) * Time.deltaTime);
+        _thrusterSpriteRenderer.color = new Color(0, 176, 255, 255);
+        //speedText.text = "Speed: " + _speed.ToString();
+    }
     void Shoot()
     {
         if (Time.time > _canFire)
@@ -215,7 +261,7 @@ public class Player : MonoBehaviour
                 break;
             case "speed":
                 _speed *= _speedMultiplier;
-                speedText.text = "Speed: " + _speed.ToString();
+                //speedText.text = "Speed: " + _speed.ToString();
                 powerUpText.text ="Powerup: " +PowerType.Speed.ToString();
                 powerUpText.gameObject.SetActive(true);
                 StartCoroutine(SetPowerup("speed"));
@@ -237,7 +283,7 @@ public class Player : MonoBehaviour
                 break;
             case "speed":
                 _speed = _initialSpeed;
-                speedText.text = "Speed: " + _speed.ToString();
+                //speedText.text = "Speed: " + _speed.ToString();
                 powerUpText.gameObject.SetActive(false);
                 break;
         }

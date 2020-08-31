@@ -359,8 +359,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3339739065072073492}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.06, y: -3.27, z: 0}
-  m_LocalScale: {x: 0.6932553, y: 0.9700737, z: 1}
+  m_LocalPosition: {x: -0.06, y: -3.089, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.8, z: 1}
   m_Children: []
   m_Father: {fileID: 4494587817894532046}
   m_RootOrder: 0
@@ -446,8 +446,8 @@ GameObject:
   - component: {fileID: 4494587817894532041}
   - component: {fileID: 4494587817894532047}
   - component: {fileID: 4494587817894532044}
-  - component: {fileID: 4494587817894532040}
   - component: {fileID: 1403254740}
+  - component: {fileID: 4494587817894532040}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -570,38 +570,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.2636178, y: 4.137208}
   m_EdgeRadius: 0
---- !u!114 &4494587817894532040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4494587817894532043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2540ee322871e6488dbdbd350064b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speedText: {fileID: 0}
-  powerUpText: {fileID: 0}
-  _engines:
-  - {fileID: 1683899392}
-  - {fileID: 1751514430}
-  _speed: 8
-  _speedMultiplier: 2
-  _powerUPDuration: 5
-  _fireRate: 0.15
-  _lives: 3
-  _screenBoundUpDown: {x: 2, y: -3.9}
-  _screenBoundLeftRight: {x: 11.1, y: -11.1}
-  _laserSound: {fileID: 8300000, guid: d0bd7c2b1903c1d4d9d781dc40622f34, type: 3}
-  _laserPrefab: {fileID: 6696538300077018418, guid: 814519fe72f5b3e479e82718f0cd068c,
-    type: 3}
-  _laserOffset: 1.05
-  _tripleShootPrefab: {fileID: 8283725859309179100, guid: 2f1f5ba1484cfc946bdd38a3489040de,
-    type: 3}
-  _shieldGO: {fileID: 2438642937724284757}
-  _score: 0
 --- !u!82 &1403254740
 AudioSource:
   m_ObjectHideFlags: 0
@@ -698,3 +666,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4494587817894532040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4494587817894532043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2540ee322871e6488dbdbd350064b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedText: {fileID: 0}
+  powerUpText: {fileID: 0}
+  _engines:
+  - {fileID: 1683899392}
+  - {fileID: 1751514430}
+  _speed: 5
+  _boostMultiplier: 2.5
+  _speedMultiplier: 2
+  _powerUPDuration: 5
+  _fireRate: 0.15
+  _lives: 3
+  _screenBoundUpDown: {x: 2, y: -3.9}
+  _screenBoundLeftRight: {x: 11.1, y: -11.1}
+  _laserSound: {fileID: 8300000, guid: d0bd7c2b1903c1d4d9d781dc40622f34, type: 3}
+  _laserPrefab: {fileID: 6696538300077018418, guid: 814519fe72f5b3e479e82718f0cd068c,
+    type: 3}
+  _laserOffset: 1.05
+  _tripleShootPrefab: {fileID: 8283725859309179100, guid: 2f1f5ba1484cfc946bdd38a3489040de,
+    type: 3}
+  _shieldGO: {fileID: 2438642937724284757}
+  _score: 0

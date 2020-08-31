@@ -53,12 +53,12 @@ public class UIManager : MonoBehaviour
     {
         //display image sprite
         //give it a new one based on the current lives index
-        _livesImage.sprite = _livesSprites[currentLives];
+        
         if (currentLives == 0)
         {
             GameOverSequence();
-
         }
+        _livesImage.sprite = _livesSprites[currentLives];
     }
     #endregion
     #region --Private Custom Methods--
