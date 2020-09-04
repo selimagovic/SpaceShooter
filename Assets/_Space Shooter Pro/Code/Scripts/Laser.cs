@@ -10,20 +10,22 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float _screenUpperBound = 8.0f;
 
-    private bool _isEnemyLaser = false;
+    public bool IsEnemyLaser { get; private set; } = false;
+
+    bool shield = false;
     #endregion
     #region Builtin Methods
 
     private void Update()
     {
         //if it is Enemy laser then move laser down
-        if (_isEnemyLaser)
+        if (IsEnemyLaser == true)
         {
             MoveDown();
         }
         else
         {
-            MoveUp();           
+            MoveUp();
         }
     }
     void MoveUp()
@@ -55,22 +57,31 @@ public class Laser : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && _isEnemyLaser == true)
+        if (other.CompareTag("Player") && IsEnemyLaser == true)
         {
             Player player = other.GetComponent<Player>();
-            if(player!=null)
+
+            //check if shield is active on player if not then give damage to player
+            if (player != null)
             {
-                player.Damage();
+                if (shield == false)
+                    player.Damage();
             }
+            Destroy(this.gameObject);
         }
     }
     #endregion
     #region Public Methods
     public void AssignEnemyLaser()
     {
-        _isEnemyLaser = true;
+        IsEnemyLaser = true;
+    }
+    public void AssignPlayerShield(bool shieldValue)
+    {
+        shield = shieldValue;
     }
     #endregion
 }

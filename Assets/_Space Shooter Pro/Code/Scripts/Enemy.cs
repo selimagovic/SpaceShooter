@@ -18,6 +18,9 @@ public class Enemy : MonoBehaviour
     private float _fireRate = 3f;
     private float _canFire = -1;
     AudioSource _aSource;
+
+    Laser[] _enemyLaser = null;
+
     #endregion
     #region Builtin Methods
     private void Start()
@@ -36,6 +39,14 @@ public class Enemy : MonoBehaviour
         if (_aSource == null)
         {
             Debug.LogError("AudioSource is NULL!!!");
+        }
+        if (_laserPrefab == null)
+        {
+            Debug.LogError("Enemy Laser Prefab is NULL!!!");
+        }
+        else
+        {
+            _enemyLaser = _laserPrefab.GetComponentsInChildren<Laser>();
         }
     }
     private void Update()
@@ -61,7 +72,7 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        if (other.CompareTag("Laser"))
+        if (other.CompareTag("Laser") && !IsEnemyLaser())
         {
             Destroy(other.gameObject);
             if (_player != null)
@@ -77,6 +88,26 @@ public class Enemy : MonoBehaviour
     }
     #endregion
     #region Private Methods
+    /// <summary>
+    /// Method for checking if it is enemy laser so that enemies cannot kill each other
+    /// </summary>
+    /// <returns></returns>
+    private bool IsEnemyLaser()
+    {
+        int laserCount = 0;
+        for (int i = 0; i < _enemyLaser.Length; i++)
+        {
+            if(_enemyLaser[i].IsEnemyLaser == true)
+            {
+                laserCount++;
+            }
+        }
+        if (laserCount == _enemyLaser.Length)
+            return true;
+        else
+            return false;
+    }
+
     void FireLaser()
     {
         if (Time.time > _canFire)

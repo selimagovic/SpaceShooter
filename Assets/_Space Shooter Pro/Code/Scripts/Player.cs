@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using UnityEngine.UIElements;
 
 /// <summary>
 /// Created By Selim Agovic
@@ -84,7 +84,6 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        
         transform.position = new Vector3(0, 0, 0);
         _initialSpeed = _speed;
         //speedText.text = "Speed: " + _initialSpeed.ToString();
@@ -124,6 +123,7 @@ public class Player : MonoBehaviour
         _onMovementAction = _playerControls.Player.Movement;
         _onShootingAction = _playerControls.Player.Shooting;
         _onBoostAction = _playerControls.Player.Boosting;
+
         _onShootingAction.Enable();
         _onMovementAction.Enable();
         _onBoostAction.Enable();
@@ -138,10 +138,11 @@ public class Player : MonoBehaviour
     #endregion
     #region --Public Custom Methods--
     public void Damage()
-    {
+    {        
         _lives--;
         UIManager.Instance.UpdateLives(_lives);
-        if(_lives==2)
+
+        if (_lives==2)
         {
             _engines[1].SetActive(true);
         }
@@ -149,7 +150,8 @@ public class Player : MonoBehaviour
         {
             _engines[0].SetActive(true);
         }
-        if(_lives<1)
+
+        if(_lives==0)
         {
             //comunicate with spawnManager
             //Let them know 
@@ -157,6 +159,7 @@ public class Player : MonoBehaviour
             Destroy(this.gameObject);
             //Debug.Log("Player Destroyed");
         }
+        UIManager.Instance.UpdateLives(_lives);
     }
 
     public void AddPowerup(PowerType powerup)
@@ -164,13 +167,13 @@ public class Player : MonoBehaviour
         switch(powerup)
         {
             case PowerType.TripleShot:
-                Powerup("triple");
+                Powerup(powerup);
                 break;
             case PowerType.Shield:
-                Powerup("shield");
+                Powerup(powerup);
                 break;
             case PowerType.Speed:
-                Powerup("speed");
+                Powerup(powerup);
                 break;
         }
     }
@@ -236,55 +239,59 @@ public class Player : MonoBehaviour
             {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, _laserOffset, 0), Quaternion.identity);
             }
-
             _audioSource.PlayOneShot(_laserSound);
             //play audio clip
         }
     }
-
-    void Powerup(string powerup)
+    void Powerup(PowerType powerup)
     {
         switch (powerup)
         {
-            case "triple"://tripleshot
+            case PowerType.TripleShot://tripleshot
                 isTrippleShotActive = true;
-                powerUpText.text = "Powerup: " + PowerType.TripleShot.ToString();
-                powerUpText.gameObject.SetActive(true);
-                StartCoroutine(SetPowerup("triple"));
+                //powerUpText.text = "Powerup: " + PowerType.TripleShot.ToString();
+                //powerUpText.gameObject.SetActive(true);
+                StartCoroutine(SetPowerup(powerup));
                 break;
-            case "shield":
+            case PowerType.Shield:
                 //activate shield game object
-                ShieldGO.gameObject.SetActive(true);
-                powerUpText.text = "Powerup: " + PowerType.Shield.ToString();
-                powerUpText.gameObject.SetActive(true);
-                StartCoroutine(SetPowerup("shield"));
+                _shieldGO.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                _shieldGO.gameObject.SetActive(true);
+                _laserPrefab.GetComponent<Laser>().AssignPlayerShield(true);
+                //powerUpText.text = "Powerup: " + PowerType.Shield.ToString();
+                //powerUpText.gameObject.SetActive(true);
+                StartCoroutine(SetPowerup(powerup,_powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
-            case "speed":
+            case PowerType.Speed:
                 _speed *= _speedMultiplier;
                 //speedText.text = "Speed: " + _speed.ToString();
-                powerUpText.text ="Powerup: " +PowerType.Speed.ToString();
-                powerUpText.gameObject.SetActive(true);
-                StartCoroutine(SetPowerup("speed"));
+                //powerUpText.text ="Powerup: " +PowerType.Speed.ToString();
+                //powerUpText.gameObject.SetActive(true);
+                
+                StartCoroutine(SetPowerup(powerup));
                 break;
         }
     }
-    IEnumerator SetPowerup(string powerup)
+    
+    //coroutine is cooldown system for powerup
+    IEnumerator SetPowerup(PowerType powerup, float powerUpDuration=5.0f)
     {                
-        yield return new WaitForSeconds(_powerUPDuration);
+        yield return new WaitForSeconds(powerUpDuration);
         switch (powerup)
         {
-            case "triple"://tripleshot
+            case PowerType.TripleShot://tripleshot
                 isTrippleShotActive = false;
-                powerUpText.gameObject.SetActive(false);
+                //powerUpText.gameObject.SetActive(false);
                 break;
-            case "shield": //activate shield game object
+            case PowerType.Shield: //activate shield game object
+                _laserPrefab.GetComponent<Laser>().AssignPlayerShield(false);
                 ShieldGO.gameObject.SetActive(false);
-                powerUpText.gameObject.SetActive(false);
+                //powerUpText.gameObject.SetActive(false);
                 break;
-            case "speed":
+            case PowerType.Speed:
                 _speed = _initialSpeed;
                 //speedText.text = "Speed: " + _speed.ToString();
-                powerUpText.gameObject.SetActive(false);
+                //powerUpText.gameObject.SetActive(false);
                 break;
         }
         
