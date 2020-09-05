@@ -31,6 +31,8 @@ public class UIManager : MonoBehaviour
     private GameObject _gameoverGO = null;
     [SerializeField]
     private Text _finalScore = null;
+    [SerializeField]
+    private Text _ammo = null;
     #endregion
     #region Builtin Methods
     private void Awake()
@@ -42,6 +44,7 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: "+0;
         _gameoverGO.gameObject.SetActive(false);
         _finalScore.text = "Total Score: " + 0;
+        _ammo.text = "Ammo: 15/15";
     }
     #endregion
     #region --Public Custom Methods--
@@ -49,6 +52,10 @@ public class UIManager : MonoBehaviour
     {
         _scoreText.text = "Score: " + playerScore.ToString();
         _finalScore.text = "Total Score: " + playerScore.ToString();
+    }
+    public void UpdateAmmoUI(int currentAmmo,int maxAmmo=15)
+    {
+        _ammo.text = "Ammo: " + currentAmmo + "/" + maxAmmo;
     }
     public void UpdateLives(int currentLives)
     {
@@ -63,22 +70,29 @@ public class UIManager : MonoBehaviour
         }
         
     }
+  
+
+    public void StartCoroutineUI(GameObject go, string text,float delay=0.5f)
+    {
+        StartCoroutine(FlickerRoutine(go, text,delay));
+    }
+
     #endregion
     #region --Private Custom Methods--
     void GameOverSequence()
     {
         _gameoverGO.gameObject.SetActive(true);
         GameManager.Instance.GameOver();
-        StartCoroutine(GameOverFlickerRoutine());
+        StartCoroutine(FlickerRoutine(_gameoverGO));
     }
-    IEnumerator GameOverFlickerRoutine()
+    private IEnumerator FlickerRoutine(GameObject go, string text = "GAME OVER",float delay=0.5f)
     {
-        while(true)
+        while (true)
         {
-            _gameoverGO.GetComponentInChildren<Text>().text = "GAME OVER";
-            yield return new WaitForSeconds(0.5f);
-            _gameoverGO.GetComponentInChildren<Text>().text = "";
-            yield return new WaitForSeconds(0.5f);
+            go.GetComponentInChildren<Text>().text = text;
+            yield return new WaitForSeconds(delay);
+            go.GetComponentInChildren<Text>().text = "";
+            yield return new WaitForSeconds(delay);
         }
     }
     #endregion

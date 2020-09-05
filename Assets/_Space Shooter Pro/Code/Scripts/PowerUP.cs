@@ -6,7 +6,9 @@ public enum PowerType
 {
     TripleShot,
     Shield,
-    Speed
+    Speed,
+    Ammo,
+    Health
 }
 public class PowerUP : MonoBehaviour
 {
@@ -50,6 +52,12 @@ public class PowerUP : MonoBehaviour
                         break;
                     case PowerType.Speed:
                         player.AddPowerup(PowerType.Speed);
+                        break;
+                    case PowerType.Ammo:
+                        player.AddPowerup(PowerType.Ammo);
+                        break;
+                    case PowerType.Health:
+                        player.AddPowerup(PowerType.Health);
                         break;
                 }
                 Destroy(this.gameObject);

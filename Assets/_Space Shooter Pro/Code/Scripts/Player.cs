@@ -15,7 +15,7 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     #region Variables
-    //public Text speedText=null;
+
     public Text powerUpText = null;
     [Header("Player Properties")]
     [SerializeField]
@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     [Range(2, 18)]
     private float _speed = 5f;
     [SerializeField]
-    [Range(1.0f,6.0f)]
+    [Range(1.0f, 6.0f)]
     private float _boostMultiplier = 1.5f;
     [SerializeField]
     [Range(1f, 5f)]
@@ -39,23 +39,27 @@ public class Player : MonoBehaviour
     [SerializeField]
     private int _lives = 3;
     [SerializeField]
-    private Vector2 _screenBoundUpDown= new Vector2();
+    private Vector2 _screenBoundUpDown = new Vector2();
     [SerializeField]
-    private Vector2 _screenBoundLeftRight=new Vector2();
+    private Vector2 _screenBoundLeftRight = new Vector2();
 
     [Header("Audio Properties")]
     [SerializeField]
-    private AudioClip _laserSound=null;
+    private AudioClip _laserSound = null;
     [Space]
     [Header("Laser Properties")]
+    public Text ammoText = null;
     [SerializeField]
-    private GameObject _laserPrefab=null;
+    private GameObject _laserPrefab = null;
     [SerializeField]
     private float _laserOffset = 1.05f;
+    [SerializeField]
+    private int _maxAmmo = 15;
+    private int _currentAmmo = 0;
     [Space]
     [Header("Powerup Properties")]
     [SerializeField]
-    private GameObject _tripleShootPrefab=null;
+    private GameObject _tripleShootPrefab = null;
     [SerializeField]
     private GameObject _shieldGO = null;
 
@@ -65,10 +69,11 @@ public class Player : MonoBehaviour
     InputAction _onShootingAction;
     InputAction _onBoostAction;
 
-    bool isTrippleShotActive=false;
+    bool isTrippleShotActive = false;
     private float _initialSpeed;
 
-    public GameObject ShieldGO { get => _shieldGO;}
+    public GameObject ShieldGO { get => _shieldGO; }
+    public InputAction OnShootingAction { get => _onShootingAction; set => _onShootingAction = value; }
 
     private AudioSource _audioSource;
     private SpriteRenderer _thrusterSpriteRenderer;
@@ -79,7 +84,7 @@ public class Player : MonoBehaviour
         _playerControls = new PlayerControls();
         _onShootingAction = _playerControls.Player.Shooting;
         _onShootingAction.performed += ctx => Shoot();
-        
+
     }
 
     private void Start()
@@ -92,12 +97,12 @@ public class Player : MonoBehaviour
 
         //change Thruister Collor when boost is applied
         _thrusterSpriteRenderer = _thruster.GetComponent<SpriteRenderer>();
-        if (_thrusterSpriteRenderer==null)
+        if (_thrusterSpriteRenderer == null)
         {
             Debug.LogError("Please Add missing Game Objects {Thruster} at " + transform.name);
         }
         _score = 0;
-        if(_engines==null)
+        if (_engines == null)
         {
             Debug.LogError("Please Add missing Game Objects at " + transform.name);
         }
@@ -106,12 +111,14 @@ public class Player : MonoBehaviour
             _engines[i].SetActive(false);
         }
         _audioSource = GetComponent<AudioSource>();
-        if(_audioSource==null)
+        if (_audioSource == null)
         {
             Debug.LogError("Please Add AudioSource missing Game Objects at " + transform.name);
         }
         else
             _audioSource.clip = _laserSound;
+
+        _currentAmmo = _maxAmmo;
     }
     private void FixedUpdate()
     {
@@ -138,24 +145,24 @@ public class Player : MonoBehaviour
     #endregion
     #region --Public Custom Methods--
     public void Damage()
-    {        
+    {
         _lives--;
         UIManager.Instance.UpdateLives(_lives);
 
-        if (_lives==2)
+        if (_lives == 2)
         {
             _engines[1].SetActive(true);
         }
-        else if(_lives==1)
+        else if (_lives == 1)
         {
             _engines[0].SetActive(true);
         }
 
-        if(_lives==0)
+        if (_lives == 0)
         {
             //comunicate with spawnManager
             //Let them know 
-            SpawnManager.Instance.OnPlayerDeath();            
+            SpawnManager.Instance.OnPlayerDeath();
             Destroy(this.gameObject);
             //Debug.Log("Player Destroyed");
         }
@@ -164,7 +171,7 @@ public class Player : MonoBehaviour
 
     public void AddPowerup(PowerType powerup)
     {
-        switch(powerup)
+        switch (powerup)
         {
             case PowerType.TripleShot:
                 Powerup(powerup);
@@ -174,6 +181,15 @@ public class Player : MonoBehaviour
                 break;
             case PowerType.Speed:
                 Powerup(powerup);
+                break;
+            case PowerType.Ammo:
+                Powerup(powerup);
+                break;
+            case PowerType.Health:
+                if (_lives < 3)
+                {
+                    Powerup(powerup);
+                }
                 break;
         }
     }
@@ -189,10 +205,10 @@ public class Player : MonoBehaviour
         Vector2 movement = _onMovementAction.ReadValue<Vector2>();
 
         Vector3 direction = new Vector3(movement.x, movement.y);
-        
+
         //If we press left shift(keyboard) or right trigger (gamepad) boost is activated, othervise normal speed is activated
         //as a on screen visualisation thruster collor is changed and set to normal when deactivated.
-        if (_onBoostAction.activeControl!=null)
+        if (_onBoostAction.activeControl != null)
         {
             Boost(direction);
             //Debug.Log("Boost speed is: "+ _speed);
@@ -205,7 +221,7 @@ public class Player : MonoBehaviour
             //speedText.text = "Speed: " + _speed.ToString();
             //Debug.Log("Normal speed is: " + _speed);
         }
-        
+
 
         //Clamp Vertical screen position
         transform.position = new Vector3(transform.position.x,
@@ -228,19 +244,30 @@ public class Player : MonoBehaviour
     }
     void Shoot()
     {
-        if (Time.time > _canFire)
+        if (_currentAmmo <=0)
         {
-            _canFire = Time.time + _fireRate;
-            if (isTrippleShotActive == true)
+            StopAllCoroutines();
+            UIManager.Instance.StartCoroutineUI(ammoText.gameObject, "Ammo: 0/15", 0.25f);
+            _onShootingAction.Disable();
+        }
+        else
+        {
+            if (Time.time > _canFire)
             {
-                Instantiate(_tripleShootPrefab, transform.position, Quaternion.identity);
+                _canFire = Time.time + _fireRate;
+                if (isTrippleShotActive == true)
+                {
+                    Instantiate(_tripleShootPrefab, transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(_laserPrefab, transform.position + new Vector3(0, _laserOffset, 0), Quaternion.identity);
+                }
+                _audioSource.PlayOneShot(_laserSound);
+                _currentAmmo--;
+                UIManager.Instance.UpdateAmmoUI(_currentAmmo, _maxAmmo);
+                //play audio clip
             }
-            else
-            {
-                Instantiate(_laserPrefab, transform.position + new Vector3(0, _laserOffset, 0), Quaternion.identity);
-            }
-            _audioSource.PlayOneShot(_laserSound);
-            //play audio clip
         }
     }
     void Powerup(PowerType powerup)
@@ -260,22 +287,30 @@ public class Player : MonoBehaviour
                 _laserPrefab.GetComponent<Laser>().AssignPlayerShield(true);
                 //powerUpText.text = "Powerup: " + PowerType.Shield.ToString();
                 //powerUpText.gameObject.SetActive(true);
-                StartCoroutine(SetPowerup(powerup,_powerUPDuration));//for testing purposes i used _powerUPDuration variable
+                StartCoroutine(SetPowerup(powerup, _powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
             case PowerType.Speed:
                 _speed *= _speedMultiplier;
                 //speedText.text = "Speed: " + _speed.ToString();
                 //powerUpText.text ="Powerup: " +PowerType.Speed.ToString();
                 //powerUpText.gameObject.SetActive(true);
-                
+
                 StartCoroutine(SetPowerup(powerup));
+                break;
+            case PowerType.Ammo:
+                _currentAmmo = 0;
+                UIManager.Instance.UpdateAmmoUI(_currentAmmo);
+                break;
+            case PowerType.Health:
+                _lives++;
+                UIManager.Instance.UpdateLives(_lives);
                 break;
         }
     }
-    
+
     //coroutine is cooldown system for powerup
-    IEnumerator SetPowerup(PowerType powerup, float powerUpDuration=5.0f)
-    {                
+    IEnumerator SetPowerup(PowerType powerup, float powerUpDuration = 5.0f)
+    {
         yield return new WaitForSeconds(powerUpDuration);
         switch (powerup)
         {
@@ -294,7 +329,7 @@ public class Player : MonoBehaviour
                 //powerUpText.gameObject.SetActive(false);
                 break;
         }
-        
+
     }
 
     #endregion
