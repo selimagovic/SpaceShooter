@@ -49,6 +49,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d04674b-e939-4125-8e64-b9837e364a78"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -183,6 +191,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Boosting"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b14a960-fa81-4650-b6e7-118865ff2581"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ebb7152b-ed3a-4ef3-8157-9676bdeafaa2"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -195,6 +225,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Player_Shooting = m_Player.FindAction("Shooting", throwIfNotFound: true);
         m_Player_Restart = m_Player.FindAction("Restart", throwIfNotFound: true);
         m_Player_Boosting = m_Player.FindAction("Boosting", throwIfNotFound: true);
+        m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -248,6 +279,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Shooting;
     private readonly InputAction m_Player_Restart;
     private readonly InputAction m_Player_Boosting;
+    private readonly InputAction m_Player_Pause;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -256,6 +288,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Shooting => m_Wrapper.m_Player_Shooting;
         public InputAction @Restart => m_Wrapper.m_Player_Restart;
         public InputAction @Boosting => m_Wrapper.m_Player_Boosting;
+        public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -277,6 +310,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Boosting.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBoosting;
                 @Boosting.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBoosting;
                 @Boosting.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnBoosting;
+                @Pause.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -293,6 +329,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Boosting.started += instance.OnBoosting;
                 @Boosting.performed += instance.OnBoosting;
                 @Boosting.canceled += instance.OnBoosting;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -303,5 +342,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnShooting(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
         void OnBoosting(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }

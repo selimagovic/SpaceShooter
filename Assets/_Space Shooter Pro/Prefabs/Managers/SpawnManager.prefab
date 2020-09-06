@@ -77,11 +77,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyPrefabs:
   - {fileID: 5409840854268951417, guid: 2ebbd026f4be44048b9d0f73d0a098ae, type: 3}
-  - {fileID: 9204354154653530584, guid: 4c68494e828a06b4f8d3c31ffb136e8d, type: 3}
   _powerPrefabs:
   - {fileID: 301116701929194104, guid: 947e1aee3b3d40b429e638f9b2a41eac, type: 3}
   - {fileID: 8209755987104488238, guid: 5c9b749045d5dce408b449122c3e48af, type: 3}
   - {fileID: 1333696711726170853, guid: b52729b326ecb794c8449b03d308bb5d, type: 3}
+  - {fileID: 5072507576595975999, guid: c5a772a86ddcfbe47a6a8ac5c8adff84, type: 3}
+  - {fileID: 7864547343530034293, guid: 950d1aa327228a84cb11211f52508a3f, type: 3}
   _enemyGRP: {fileID: 7911499367485490159}
   _powerupGRP: {fileID: 7911499365400362886}
   _randomSpawningPositionX: {x: -9.45, y: 9.45}

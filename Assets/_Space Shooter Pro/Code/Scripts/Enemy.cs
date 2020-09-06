@@ -66,6 +66,7 @@ public class Enemy : MonoBehaviour
             {
                 _player.Damage();
                 _anim.SetTrigger("OnEnemyDeath");
+                ShakeManager.Instance.ShakeCamera();
                 _speed /= _deathSpeed;
                 _aSource.Play();
                 Destroy(this.gameObject, 2.8f);

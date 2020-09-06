@@ -15,8 +15,6 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     #region Variables
-
-    public Text powerUpText = null;
     [Header("Player Properties")]
     [SerializeField]
     private GameObject[] _engines = null;
@@ -68,12 +66,13 @@ public class Player : MonoBehaviour
     InputAction _onMovementAction;
     InputAction _onShootingAction;
     InputAction _onBoostAction;
+    InputAction _onPauseAction;
 
     bool isTrippleShotActive = false;
     private float _initialSpeed;
 
     public GameObject ShieldGO { get => _shieldGO; }
-    public InputAction OnShootingAction { get => _onShootingAction; set => _onShootingAction = value; }
+    public InputAction OnShootingAction { get => _onShootingAction;}
 
     private AudioSource _audioSource;
     private SpriteRenderer _thrusterSpriteRenderer;
@@ -84,6 +83,8 @@ public class Player : MonoBehaviour
         _playerControls = new PlayerControls();
         _onShootingAction = _playerControls.Player.Shooting;
         _onShootingAction.performed += ctx => Shoot();
+        _onPauseAction = _playerControls.Player.Pause;
+        _onPauseAction.performed += ctx => Pause();
 
     }
 
@@ -91,8 +92,6 @@ public class Player : MonoBehaviour
     {
         transform.position = new Vector3(0, 0, 0);
         _initialSpeed = _speed;
-        //speedText.text = "Speed: " + _initialSpeed.ToString();
-        powerUpText.gameObject.SetActive(false);
         ShieldGO.gameObject.SetActive(false);
 
         //change Thruister Collor when boost is applied
@@ -211,15 +210,12 @@ public class Player : MonoBehaviour
         if (_onBoostAction.activeControl != null)
         {
             Boost(direction);
-            //Debug.Log("Boost speed is: "+ _speed);
         }
         else
         {
             _speed = _initialSpeed;
             transform.Translate(direction * _speed * Time.deltaTime);
             _thrusterSpriteRenderer.color = new Color(255, 255, 255, 255);
-            //speedText.text = "Speed: " + _speed.ToString();
-            //Debug.Log("Normal speed is: " + _speed);
         }
 
 
@@ -248,10 +244,12 @@ public class Player : MonoBehaviour
         {
             _thrusterSpriteRenderer.color = new Color(255, 255, 255, 255);
             transform.Translate(direction * _speed * Time.deltaTime);
+        }
     }
 
-
-        //speedText.text = "Speed: " + _speed.ToString();
+    void Pause()
+    {
+        MainMenu.Instance.PauseGame();
     }
     void Shoot()
     {
@@ -287,8 +285,6 @@ public class Player : MonoBehaviour
         {
             case PowerType.TripleShot://tripleshot
                 isTrippleShotActive = true;
-                //powerUpText.text = "Powerup: " + PowerType.TripleShot.ToString();
-                //powerUpText.gameObject.SetActive(true);
                 StartCoroutine(SetPowerup(powerup));
                 break;
             case PowerType.Shield:
@@ -296,16 +292,10 @@ public class Player : MonoBehaviour
                 _shieldGO.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 _shieldGO.gameObject.SetActive(true);
                 _laserPrefab.GetComponent<Laser>().AssignPlayerShield(true);
-                //powerUpText.text = "Powerup: " + PowerType.Shield.ToString();
-                //powerUpText.gameObject.SetActive(true);
                 StartCoroutine(SetPowerup(powerup, _powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
             case PowerType.Speed:
                 _speed *= _speedMultiplier;
-                //speedText.text = "Speed: " + _speed.ToString();
-                //powerUpText.text ="Powerup: " +PowerType.Speed.ToString();
-                //powerUpText.gameObject.SetActive(true);
-
                 StartCoroutine(SetPowerup(powerup));
                 break;
             case PowerType.Ammo:
@@ -327,17 +317,13 @@ public class Player : MonoBehaviour
         {
             case PowerType.TripleShot://tripleshot
                 isTrippleShotActive = false;
-                //powerUpText.gameObject.SetActive(false);
                 break;
             case PowerType.Shield: //activate shield game object
                 _laserPrefab.GetComponent<Laser>().AssignPlayerShield(false);
                 ShieldGO.gameObject.SetActive(false);
-                //powerUpText.gameObject.SetActive(false);
                 break;
             case PowerType.Speed:
                 _speed = _initialSpeed;
-                //speedText.text = "Speed: " + _speed.ToString();
-                //powerUpText.gameObject.SetActive(false);
                 break;
         }
 

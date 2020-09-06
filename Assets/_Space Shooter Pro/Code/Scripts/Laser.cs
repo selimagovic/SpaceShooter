@@ -68,7 +68,10 @@ public class Laser : MonoBehaviour
             if (player != null)
             {
                 if (shield == false)
+                {
                     player.Damage();
+                    ShakeManager.Instance.ShakeCamera();
+                }
             }
             Destroy(this.gameObject);
         }
