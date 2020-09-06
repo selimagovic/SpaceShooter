@@ -238,8 +238,19 @@ public class Player : MonoBehaviour
     }
     void Boost(Vector3 direction)
     {
-        transform.Translate(direction * (_speed * _boostMultiplier) * Time.deltaTime);
-        _thrusterSpriteRenderer.color = new Color(0, 176, 255, 255);
+        if (UIManager.Instance.canBoost == true)
+        {
+            transform.Translate(direction * (_speed * _boostMultiplier) * Time.deltaTime);
+            _thrusterSpriteRenderer.color = new Color(0, 176, 255, 255);
+            UIManager.Instance.UpdateSlider(0, 0.005f);
+        }
+        else
+        {
+            _thrusterSpriteRenderer.color = new Color(255, 255, 255, 255);
+            transform.Translate(direction * _speed * Time.deltaTime);
+    }
+
+
         //speedText.text = "Speed: " + _speed.ToString();
     }
     void Shoot()
@@ -298,7 +309,7 @@ public class Player : MonoBehaviour
                 StartCoroutine(SetPowerup(powerup));
                 break;
             case PowerType.Ammo:
-                _currentAmmo = 0;
+                _currentAmmo = 15;
                 UIManager.Instance.UpdateAmmoUI(_currentAmmo);
                 break;
             case PowerType.Health:
