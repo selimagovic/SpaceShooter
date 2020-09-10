@@ -68,7 +68,8 @@ public class Player : MonoBehaviour
     InputAction _onBoostAction;
     InputAction _onPauseAction;
 
-    bool isTrippleShotActive = false;
+    bool _isTrippleShotActive = false;
+    bool _isSpeedBoostActive = false;
     private float _initialSpeed;
 
     public GameObject ShieldGO { get => _shieldGO; }
@@ -211,13 +212,17 @@ public class Player : MonoBehaviour
         {
             Boost(direction);
         }
+        else if(_isSpeedBoostActive==true)
+        {
+            transform.Translate(direction * _speed *_speedMultiplier * Time.deltaTime);
+        }
         else
         {
             _speed = _initialSpeed;
             transform.Translate(direction * _speed * Time.deltaTime);
             _thrusterSpriteRenderer.color = new Color(255, 255, 255, 255);
         }
-
+        Debug.Log("Speed: " + _speed);
 
         //Clamp Vertical screen position
         transform.position = new Vector3(transform.position.x,
@@ -255,7 +260,6 @@ public class Player : MonoBehaviour
     {
         if (_currentAmmo <=0)
         {
-            StopAllCoroutines();
             UIManager.Instance.StartCoroutineUI(ammoText.gameObject, "Ammo: 0/15", 0.25f);
             _onShootingAction.Disable();
         }
@@ -264,7 +268,7 @@ public class Player : MonoBehaviour
             if (Time.time > _canFire)
             {
                 _canFire = Time.time + _fireRate;
-                if (isTrippleShotActive == true)
+                if (_isTrippleShotActive == true)
                 {
                     Instantiate(_tripleShootPrefab, transform.position, Quaternion.identity);
                 }
@@ -284,7 +288,7 @@ public class Player : MonoBehaviour
         switch (powerup)
         {
             case PowerType.TripleShot://tripleshot
-                isTrippleShotActive = true;
+                _isTrippleShotActive = true;
                 StartCoroutine(SetPowerup(powerup));
                 break;
             case PowerType.Shield:
@@ -295,8 +299,9 @@ public class Player : MonoBehaviour
                 StartCoroutine(SetPowerup(powerup, _powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
             case PowerType.Speed:
-                _speed *= _speedMultiplier;
-                StartCoroutine(SetPowerup(powerup));
+                _isSpeedBoostActive = true;
+                _onBoostAction.Disable();
+                StartCoroutine(SetPowerup(powerup,_powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
             case PowerType.Ammo:
                 _currentAmmo = 15;
@@ -316,14 +321,16 @@ public class Player : MonoBehaviour
         switch (powerup)
         {
             case PowerType.TripleShot://tripleshot
-                isTrippleShotActive = false;
+                _isTrippleShotActive = false;
                 break;
             case PowerType.Shield: //activate shield game object
                 _laserPrefab.GetComponent<Laser>().AssignPlayerShield(false);
                 ShieldGO.gameObject.SetActive(false);
                 break;
             case PowerType.Speed:
+                _isSpeedBoostActive = false;
                 _speed = _initialSpeed;
+                _onBoostAction.Enable();
                 break;
         }
 

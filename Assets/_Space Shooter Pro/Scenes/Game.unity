@@ -2264,6 +2264,11 @@ PrefabInstance:
       propertyPath: _lives
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 4494587817894532040, guid: 343bdb80f9add484d980f756075a73a9,
+        type: 3}
+      propertyPath: _speedMultiplier
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4494587817894532043, guid: 343bdb80f9add484d980f756075a73a9,
         type: 3}
       propertyPath: m_Name
