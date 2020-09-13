@@ -12,7 +12,6 @@ public class Laser : MonoBehaviour
 
     public bool IsEnemyLaser { get; private set; } = false;
 
-    bool shield = false;
     #endregion
     #region Builtin Methods
 
@@ -60,6 +59,11 @@ public class Laser : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Shield") && IsEnemyLaser == true)
+        {
+            Shield.Instance.SheildDamageColor();
+        }
+        else 
         if (other.CompareTag("Player") && IsEnemyLaser == true)
         {
             Player player = other.GetComponent<Player>();
@@ -67,24 +71,17 @@ public class Laser : MonoBehaviour
             //check if shield is active on player if not then give damage to player
             if (player != null)
             {
-                if (shield == false)
-                {
-                    player.Damage();
-                    ShakeManager.Instance.ShakeCamera();
-                }
+                player.Damage();
+                ShakeManager.Instance.ShakeCamera();
             }
-            Destroy(this.gameObject);
         }
+        Destroy(this.gameObject);
     }
     #endregion
     #region Public Methods
     public void AssignEnemyLaser()
     {
         IsEnemyLaser = true;
-    }
-    public void AssignPlayerShield(bool shieldValue)
-    {
-        shield = shieldValue;
     }
     #endregion
 }

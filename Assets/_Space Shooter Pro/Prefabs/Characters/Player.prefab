@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 7864852714945236698}
   m_Layer: 0
   m_Name: Shield
-  m_TagString: Untagged
+  m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -333,8 +333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3855658fca2eca04599792433b8da698, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyLaserPrefab: {fileID: 3361327815437041854, guid: 440ab416c8d1e2e4da84cb7c5d8f2063,
-    type: 3}
 --- !u!1 &3339739065072073492
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +678,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2540ee322871e6488dbdbd350064b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerUpText: {fileID: 0}
   _engines:
   - {fileID: 1683899392}
   - {fileID: 1751514430}
@@ -694,9 +691,11 @@ MonoBehaviour:
   _screenBoundUpDown: {x: 2, y: -3.9}
   _screenBoundLeftRight: {x: 11.1, y: -11.1}
   _laserSound: {fileID: 8300000, guid: d0bd7c2b1903c1d4d9d781dc40622f34, type: 3}
+  ammoText: {fileID: 0}
   _laserPrefab: {fileID: 6696538300077018418, guid: 814519fe72f5b3e479e82718f0cd068c,
     type: 3}
   _laserOffset: 1.05
+  _maxAmmo: 15
   _tripleShootPrefab: {fileID: 8283725859309179100, guid: 2f1f5ba1484cfc946bdd38a3489040de,
     type: 3}
   _shieldGO: {fileID: 2438642937724284757}

@@ -2106,11 +2106,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409779546}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1565702951}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1526562155
@@ -2251,24 +2251,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4494587817894532040, guid: 343bdb80f9add484d980f756075a73a9,
         type: 3}
-      propertyPath: powerUpText
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4494587817894532040, guid: 343bdb80f9add484d980f756075a73a9,
-        type: 3}
       propertyPath: ammoText
       value: 
       objectReference: {fileID: 271714966076572151}
-    - target: {fileID: 4494587817894532040, guid: 343bdb80f9add484d980f756075a73a9,
-        type: 3}
-      propertyPath: _lives
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4494587817894532040, guid: 343bdb80f9add484d980f756075a73a9,
-        type: 3}
-      propertyPath: _speedMultiplier
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4494587817894532043, guid: 343bdb80f9add484d980f756075a73a9,
         type: 3}
       propertyPath: m_Name
@@ -2361,6 +2346,7 @@ Transform:
   - {fileID: 737629590}
   - {fileID: 567346102}
   - {fileID: 892391139}
+  - {fileID: 1409779548}
   m_Father: {fileID: 1227663470}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

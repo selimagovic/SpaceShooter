@@ -295,7 +295,6 @@ public class Player : MonoBehaviour
                 //activate shield game object
                 _shieldGO.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 _shieldGO.gameObject.SetActive(true);
-                _laserPrefab.GetComponent<Laser>().AssignPlayerShield(true);
                 StartCoroutine(SetPowerup(powerup, _powerUPDuration));//for testing purposes i used _powerUPDuration variable
                 break;
             case PowerType.Speed:
@@ -324,7 +323,6 @@ public class Player : MonoBehaviour
                 _isTrippleShotActive = false;
                 break;
             case PowerType.Shield: //activate shield game object
-                _laserPrefab.GetComponent<Laser>().AssignPlayerShield(false);
                 ShieldGO.gameObject.SetActive(false);
                 break;
             case PowerType.Speed:

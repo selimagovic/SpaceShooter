@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// This Class code is found on Internet and Modified to fit my purpose
+/// ShakeManager class create camera shake on enemy or laser from enemy hit. 
+/// </summary>
 public class ShakeManager : MonoBehaviour
 {
     private static ShakeManager _instance;
